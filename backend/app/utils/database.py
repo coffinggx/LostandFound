@@ -1,6 +1,11 @@
 from dotenv import load_dotenv
 import os
 
+from sqlalchemy.orm import DeclarativeBase
+
+# global DeclarativeBase class
+class Base(DeclarativeBase):
+    pass
 
 from typing import Annotated
 from fastapi import Depends
