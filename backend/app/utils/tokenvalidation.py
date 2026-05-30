@@ -27,7 +27,6 @@ SECRET: str = SECRET_ENV
 
 def create_access_token(data: dict, expire_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
-
     expire = (
         datetime.now(timezone.utc) + expire_delta
         if expire_delta
@@ -49,12 +48,12 @@ def verify_token(token: str) -> TokenData:
     try:
         payload = jwt.decode(token, SECRET, algorithms=[ALGORITHM])
 
-        username = payload.get("sub")
+        email= payload.get("sub")
 
-        if username is None:
+        if email is None:
             raise credentials_exception
 
-        return TokenData(username=username)
+        return TokenData(email=email)
 
     except JWTClaimsError:
         raise credentials_exception
