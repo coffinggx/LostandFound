@@ -3,15 +3,18 @@ from typing import Annotated
 from app.utils.tokenvalidation import create_access_token, verify_token
 from sqlalchemy import select
 
-from app.models.usersmodel import TokenData, User, UserCreate, UserLogin, UserResponse
+from app.models.usersmodel import TokenData, User, UserCreate,  UserResponse
 
 from app.utils.database import sessiondb
 from app.utils.hash import Hash
 
-from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-protected = Annotated[str, Depends(oauth2_scheme)]
+# for making protected routes
+from app.utils.oauth import protected
+
+# impoort database instance
+from app.utils.database import sessiondb
 
 
 async def get_current_user(token: protected, db:sessiondb):
@@ -81,4 +84,4 @@ async def register(user: UserCreate, db: sessiondb):
 
 @userrouter.get("/getme")
 async def get_token(token: protected):
-    return "You are authenticated"
+    return token
