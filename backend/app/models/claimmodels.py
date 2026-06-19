@@ -1,4 +1,5 @@
 from enum import Enum
+from pydantic import BaseModel
 from sqlalchemy import Text,ForeignKey, DateTime,func
 from datetime import datetime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
@@ -22,4 +23,7 @@ class Claim(Base):
     claim_status: Mapped[ClaimStatus] = mapped_column(default=ClaimStatus.PENDING, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default= func.now() ,nullable=False)
    
-
+class CreateClaim(BaseModel):
+    item_id: int
+    claimed_by: int
+    claim_message: str

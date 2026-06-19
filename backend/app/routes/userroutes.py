@@ -75,7 +75,7 @@ async def register(user: UserCreate, db: sessiondb):
         id = new_user.user_id,
         email= new_user.email,
         department= new_user.department,
-        )
+    )
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)

@@ -42,3 +42,5 @@ class CreatePost(BaseModel):
     date_lost_found: datetime
     item_type: ItemType
     item_status: ItemStatus
+
+
