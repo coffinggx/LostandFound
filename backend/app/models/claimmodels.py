@@ -12,7 +12,7 @@ class ClaimStatus(Enum):
     APPROVED = "approved"
     REJECTED = "rejected"
 
-
+   
 class Claim(Base):
     __tablename__ = "claims"
 

@@ -1,6 +1,7 @@
 from datetime import datetime
 from enum import Enum
 from typing import Optional
+from fastapi import UploadFile
 from pydantic import BaseModel
 from sqlalchemy.orm import Mapped, mapped_column, DeclarativeBase
 from sqlalchemy import DateTime, ForeignKey, String, Text,func
@@ -16,6 +17,15 @@ class ItemStatus(str,Enum):
     OPEN = "open"
     CLAIMED = "claimed"
     RETURNED = "returned"
+
+    def parse(self,status:str):
+        if status == "open":
+            return self.OPEN
+        elif status == "claimed":
+            return self.CLAIMED
+        else:
+            return self.RETURNED
+
 
 # Lost or Found Class (ORM - Class and db is mapped)
 class Item(Base):
@@ -37,7 +47,7 @@ class CreatePost(BaseModel):
     title: str
     description: str
     category_name: str
-    image_url: Optional[str] = None
+    image: Optional[UploadFile] = None
     location: str
     date_lost_found: datetime
     item_type: ItemType

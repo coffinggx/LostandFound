@@ -1,6 +1,11 @@
+# create claim
+# edit claim message
+# delete claim
+# dont need to update status that is handled by admin(ig)
+
 from sqlalchemy import delete, select
 from app.models.claimmodels import Claim, CreateClaim
-from app.models.usersmodel import User
+# from app.models.usersmodel import User
 from app.utils.database import sessiondb
 from app.routes.userroutes import get_current_user, protected
 from fastapi import APIRouter, HTTPException
@@ -53,4 +58,7 @@ async def edit_claim(claim_id: int,claim: CreateClaim,  db: sessiondb, _: protec
     claim_ps = rs.scalar_one_or_none()
     if claim_ps is None:
         raise HTTPException(status_code=404, detail="post not found")
-
+    claim_ps.claim_message = claim.claim_message;
+    await db.commit()
+    await db.refresh(claim)
+    return {"details": "claim updated!", "updated_claim": claim}

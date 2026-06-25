@@ -4,15 +4,16 @@
 # /edit/:id -> Also include like updating the post to found
 # /delete/:id
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from app.models.categorymodels import Category
 from app.routes.userroutes import get_current_user
 from app.utils.database import sessiondb
 from app.utils.oauth import protected
 from app.models.itemmodels import Item, CreatePost
 
-from sqlalchemy import delete, select, update, values, insert
+from sqlalchemy import delete, select
 
+from app.utils.cloudinary import upload_image
 
 router = APIRouter()
 
@@ -25,13 +26,19 @@ async def create_post(post: CreatePost, db: sessiondb, token: protected):
     await db.commit()
     await db.refresh(category)
     current_user = await get_current_user(token, db)
+    url = None
+    if post.image is not None:
+        try:
+            url = await upload_image(post.image)
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
     a_post = Item(
         title=post.title,
         description=post.description,
-        image_url=post.image_url,
         category_id=category.category_id,
         date_lost_found=post.date_lost_found,
         location=post.location,
+        image_url = url,
         status = post.item_status,
         item_type = post.item_type,
         posted_by=current_user.user_id,
@@ -67,8 +74,8 @@ async def delete_post(post_id: int, db: sessiondb, _:protected):
     await db.commit()
     return {"detail": f"deleted {rs.rowcount}"}
 
-@router.post("/edit/{post_id}")
-async def edit_post(post_id: int, db: sessiondb, post: CreatePost):
+@router.patch("/edit/{post_id}")
+async def edit_post(post_id: int, db: sessiondb, post: CreatePost, _:protected):
     rs = await db.execute(select(Item).where(Item.item_id == post_id))
     item = rs.scalar_one_or_none()
     if item is None:
@@ -77,10 +84,16 @@ async def edit_post(post_id: int, db: sessiondb, post: CreatePost):
     citem = crs.scalar_one_or_none()
     if citem is None:
         raise HTTPException(status_code=404, detail="Category not availlable")
+    url = None
+    if post.image is not None:
+        try:
+            url = await upload_image(post.image)
+        except Exception as e:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=e)
     item.title = post.title
     item.description = post.description
     item.category_id = citem.category_id
-    item.image_url = post.image_url
+    item.image_url = url
     item.location = post.location
     item.date_lost_found = post.date_lost_found
     item.item_type = post.item_type
