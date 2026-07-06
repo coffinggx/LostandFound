@@ -1,8 +1,14 @@
+import { Routes, Route } from "react-router";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 const App = () => {
   return (
-    <div>
-      <h1> Hello from react frontend </h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+    </Routes>
   );
 };
 export default App;
