@@ -1,5 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from typing import Annotated
+
+from starlette.types import HTTPExceptionHandler
+from app.models.claimmodels import Claim
+from app.models.itemmodels import Item
 from app.utils.tokenvalidation import create_access_token, verify_token
 from sqlalchemy import select
 
@@ -70,18 +74,64 @@ async def register(user: UserCreate, db: sessiondb):
         department=user.department,
         phone=user.phone,
     )
+    db.add(new_user)
+    await db.commit()
+    await db.refresh(new_user)
+
 
     r_user = UserResponse(
         id = new_user.user_id,
         email= new_user.email,
         department= new_user.department,
+        phone= new_user.phone,
+        role = new_user.role,
+        fullname = new_user.fullname
     )
-    db.add(new_user)
-    await db.commit()
-    await db.refresh(new_user)
     return r_user
 
 
 @userrouter.get("/getme")
-async def get_token(token: protected):
-    return token
+async def get_token(token: protected ,db: sessiondb):
+    current_user = await get_current_user(token,db)
+    r_user = UserResponse(
+        id = current_user.user_id,
+        email= current_user.email,
+        department= current_user.department,
+        phone= current_user.phone,
+        role = current_user.role,
+        fullname = current_user.fullname
+    )
+    return r_user
+
+@userrouter.get("/user/{user_id}")
+async def get_user(_:protected, db: sessiondb, user_id: int):
+    rs = await db.execute(select(User).where(User.user_id == user_id))
+    user = rs.scalar_one_or_none();
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    r_user = UserResponse(
+        id = user.user_id,
+        email= user.email,
+        department= user.department,
+        phone= user.phone,
+        role = user.role,
+        fullname = user.fullname
+    )
+    return r_user
+
+@userrouter.get("/posts")
+async def get_all_posts(db: sessiondb,token: protected):
+    current_user = await get_current_user(token,db)
+    query = await db.execute(select(Item).where(Item.posted_by == current_user.user_id))
+    posts = query.scalars().all()
+    return posts
+
+@userrouter.get("/claims")
+async def get_all_claims(db: sessiondb,token: protected):
+    current_user = await get_current_user(token,db)
+    query = await db.execute(select(Claim).where(Claim.claimed_by== current_user.user_id))
+    claims = query.scalars().all()
+    return claims
+
+
+

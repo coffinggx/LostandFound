@@ -32,7 +32,9 @@ class AdminActions(Base):
     item_id: Mapped[int]  = mapped_column(ForeignKey("items.item_id"),nullable=False)
     remarks: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, server_default= func.now() ,nullable=False)
-    
+
+
+   
 
 # class for register Form
 class UserCreate(BaseModel):
@@ -48,7 +50,10 @@ class UserResponse(BaseModel):
     id: int
     email: str
     department: str
-    class config:
+    role: Role | None
+    fullname: str
+    phone: str | None
+    class Config:
         from_attributes = True
 
 
