@@ -1,12 +1,37 @@
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
 
 function Register() {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    fullname: "",
+    email: "",
+    phone: "",
+    department: "",
+    password: "",
+    confirmPassword: "",
+    role: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleRegister = (e) => {
     e.preventDefault();
-    // Add your registration logic here
+    if (formData.password !== formData.confirmPassword) {
+      alert("❌ Passwords do not match!");
+      return;
+    }
+    console.log("Registration form submitted:", formData);
+    localStorage.setItem("access_token", "mock-token");
+    localStorage.setItem("user_role", formData.role || 'user');
+    alert("✅ Registration Successful! (Mock execution)");
     navigate("/dashboard");
   };
 
@@ -39,21 +64,69 @@ function Register() {
           <p>Join the College Lost & Found Community</p>
 
           <div className="row">
-            <input type="text" placeholder="Full Name" required />
-            <input type="email" placeholder="Email Address" required />
+            <input
+              type="text"
+              name="fullname"
+              placeholder="Full Name"
+              value={formData.fullname}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="row">
-            <input type="text" placeholder="Phone Number" required />
-            <input type="text" placeholder="Department" required />
+            <input
+              type="text"
+              name="phone"
+              placeholder="Phone Number"
+              value={formData.phone}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="text"
+              name="department"
+              placeholder="Department"
+              value={formData.department}
+              onChange={handleChange}
+              required
+            />
           </div>
 
           <div className="row">
-            <input type="password" placeholder="Password" required />
-            <input type="password" placeholder="Confirm Password" required />
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <input
+              type="password"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+            />
           </div>
 
-          <select required defaultValue="">
+          <select
+            name="role"
+            value={formData.role}
+            onChange={handleChange}
+            required
+            defaultValue=""
+          >
             <option value="" disabled>Select Role</option>
             <option value="user">User</option>
             <option value="admin">Admin</option>

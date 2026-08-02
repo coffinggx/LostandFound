@@ -5,11 +5,11 @@ import './ReportFound.css';
 const ReportFound = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    itemName: '',
-    category: '',
+    title: '',
+    category_name: '',
     description: '',
     location: '',
-    dateFound: '',
+    date_lost_found: '',
     contactEmail: '',
     contactPhone: ''
   });
@@ -24,8 +24,18 @@ const ReportFound = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Found Item:', formData);
-    alert('✅ Found item reported successfully!');
+    const apiPayload = {
+      title: formData.title,
+      category_name: formData.category_name,
+      description: formData.description,
+      location: formData.location,
+      date_lost_found: formData.date_lost_found,
+      item_type: 'found',
+      item_status: 'open',
+    };
+
+    console.log('Create found item payload:', apiPayload);
+    alert('✅ Found item reported successfully! (Frontend mock)');
     navigate('/dashboard');
   };
 

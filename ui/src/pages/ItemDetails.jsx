@@ -4,15 +4,16 @@ import './ItemDetails.css'
 
 const items = [
   {
-    id: 1,
+    item_id: 1,
     title: "Black Backpack",
-    category: "Bag",
-    status: "Lost",
+    category_name: "Bag",
+    item_status: "open",
+    item_type: "lost",
     location: "Library",
-    date: "10 July 2026",
-    owner: "Rahul Sharma",
+    date_lost_found: "2026-07-10T10:00",
+    posted_by: 1,
     description: "Black Nike backpack containing notebooks, charger and stationery.",
-    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=350&fit=crop",
+    image_url: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=350&fit=crop",
   },
   {
     id: 2,

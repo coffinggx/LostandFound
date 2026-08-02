@@ -7,13 +7,12 @@ const ClaimItem = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    claim_message: "",
     fullname: "",
     email: "",
     phone: "",
-    reason: "",
-    proof: "",
   });
-
+ 
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -23,8 +22,14 @@ const ClaimItem = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("✅ Claim Submitted Successfully!");
-    console.log(formData);
+    const apiPayload = {
+      item_id: Number(id),
+      claimed_by: 1,
+      claim_message: formData.claim_message,
+    };
+
+    console.log('Create claim payload:', apiPayload);
+    alert("✅ Claim Submitted Successfully! (Frontend mock)");
     navigate('/claims');
   };
 

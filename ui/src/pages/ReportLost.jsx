@@ -5,11 +5,11 @@ import './ReportLost.css';
 const ReportLost = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    itemName: '',
-    category: '',
+    title: '',
+    category_name: '',
     description: '',
     location: '',
-    dateLost: '',
+    date_lost_found: '',
     contactEmail: '',
     contactPhone: ''
   });
@@ -24,8 +24,18 @@ const ReportLost = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Lost Item:', formData);
-    alert('✅ Lost item reported successfully!');
+    const apiPayload = {
+      title: formData.title,
+      category_name: formData.category_name,
+      description: formData.description,
+      location: formData.location,
+      date_lost_found: formData.date_lost_found,
+      item_type: 'lost',
+      item_status: 'open',
+    };
+
+    console.log('Create lost item payload:', apiPayload);
+    alert('✅ Lost item reported successfully! (Frontend mock)');
     navigate('/dashboard');
   };
 
