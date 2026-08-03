@@ -1,7 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { itemsApi } from '../../api';
+import { useToast } from '../../context/ToastContext';
 import './CreatePost.css';
 
 const CreatePost = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const editPost = location.state?.editPost;
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -13,6 +20,25 @@ const CreatePost = () => {
   });
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!editPost) {
+      return;
+    }
+
+    setFormData({
+      title: editPost.title || '',
+      description: editPost.description || '',
+      category_name: editPost.category_name || 'Bag',
+      location: editPost.location || '',
+      date_lost_found: editPost.date_lost_found || '',
+      item_type: editPost.item_type || 'lost',
+      item_status: editPost.status || 'open',
+    });
+    setImagePreview(editPost.image_url || '');
+  }, [editPost]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,44 +60,45 @@ const CreatePost = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setIsSubmitting(true);
 
-    const apiPayload = {
-      title: formData.title,
-      description: formData.description,
-      category_name: formData.category_name,
-      location: formData.location,
-      date_lost_found: formData.date_lost_found,
-      item_type: formData.item_type,
-      item_status: formData.item_status,
-      image: imageFile,
-    };
+    try {
+      const formPayload = new FormData();
+      formPayload.append('title', formData.title);
+      formPayload.append('description', formData.description);
+      formPayload.append('category_name', formData.category_name);
+      formPayload.append('location', formData.location);
+      formPayload.append('item_type', formData.item_type);
+      formPayload.append('item_status', formData.item_status);
 
-    console.log('--- Prepare CreatePost payload for backend ---');
-    console.log(apiPayload);
+      if (imageFile) {
+        formPayload.append('image', imageFile);
+      }
 
-    alert(`✅ Success!\nPost titled "${formData.title}" created successfully (frontend mock).`);
+      if (editPost?.item_id) {
+        await itemsApi.updatePost(editPost.item_id, formPayload);
+        showToast(`Post titled "${formData.title}" was updated.`);
+      } else {
+        await itemsApi.createPost(formPayload);
+        showToast(`Post titled "${formData.title}" was created.`);
+      }
 
-    // Reset Form
-    setFormData({
-      title: '',
-      description: '',
-      category_name: 'Bag',
-      location: '',
-      date_lost_found: '',
-      item_type: 'lost',
-      item_status: 'open',
-    });
-    setImageFile(null);
-    setImagePreview('');
+      navigate('/posts');
+    } catch (err) {
+      setError(err.message || 'Unable to create post right now.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="createpost-container">
       <div className="createpost-card">
         <div className="createpost-header">
-          <h1>➕ Create New Announcement</h1>
+          <h1>{editPost ? 'Edit Announcement' : 'Create New Announcement'}</h1>
           <p className="subtitle">Report a lost or found item to the college community</p>
         </div>
 
@@ -86,8 +113,8 @@ const CreatePost = () => {
                 onChange={handleChange}
                 required
               >
-                <option value="lost">🔴 Lost Item</option>
-                <option value="found">🟢 Found Item</option>
+                <option value="lost">Lost Item</option>
+                <option value="found">Found Item</option>
               </select>
             </div>
 
@@ -138,18 +165,6 @@ const CreatePost = () => {
                 <option value="Other">Other</option>
               </select>
             </div>
-
-            <div className="form-group">
-              <label htmlFor="date_lost_found">Date lost or found *</label>
-              <input
-                type="datetime-local"
-                id="date_lost_found"
-                name="date_lost_found"
-                value={formData.date_lost_found}
-                onChange={handleChange}
-                required
-              />
-            </div>
           </div>
 
           <div className="form-group">
@@ -189,7 +204,7 @@ const CreatePost = () => {
                 className="file-input"
               />
               <label htmlFor="image" className="file-label">
-                📂 Choose Image File
+                Choose Image File
               </label>
               {imageFile && <span className="file-name">{imageFile.name}</span>}
             </div>
@@ -200,9 +215,11 @@ const CreatePost = () => {
             )}
           </div>
 
+          {error && <p className="auth-error">{error}</p>}
+
           <div className="form-actions">
-            <button type="submit" className="submit-btn">
-              Publish Announcement
+            <button type="submit" className="submit-btn" disabled={isSubmitting}>
+              {isSubmitting ? (editPost ? 'Updating...' : 'Publishing...') : (editPost ? 'Update Announcement' : 'Publish Announcement')}
             </button>
           </div>
         </form>

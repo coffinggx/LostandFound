@@ -9,6 +9,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user_role');
+    localStorage.removeItem('user_profile');
     navigate('/login');
   };
 
@@ -16,25 +17,33 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="nav-container">
         <div className="nav-brand">
-          <Link to="/dashboard">
-            <span className="brand-icon">🎒</span>
+          <Link to="/home">
             <span className="brand-text">Lost & Found</span>
           </Link>
         </div>
 
         <div className="nav-menu">
-          <Link to="/dashboard" className="nav-link">Dashboard</Link>
+          <Link to="/home" className="nav-link">Home</Link>
           <Link to="/browse" className="nav-link">Browse</Link>
-          <Link to="/claims" className="nav-link">My Claims</Link>
-          <Link to="/posts" className="nav-link">My Posts</Link>
-          {role === 'admin' && (
-            <Link to="/admin" className="nav-link">Admin</Link>
+          {role === 'admin' ? (
+            <>
+              <Link to="/admin" className="nav-link">Admin</Link>
+              <Link to="/profile" className="nav-link">Profile</Link>
+            </>
+          ) : (
+            <>
+              <Link to="/claims" className="nav-link">My Claims</Link>
+              <Link to="/posts" className="nav-link">My Posts</Link>
+              <Link to="/report-lost" className="nav-link">Report Lost</Link>
+              <Link to="/report-found" className="nav-link">Report Found</Link>
+              <Link to="/profile" className="nav-link">Profile</Link>
+            </>
           )}
         </div>
 
         <div className="nav-actions">
           <button onClick={handleLogout} className="logout-btn">
-            🚪 Logout
+            Logout
           </button>
         </div>
       </div>

@@ -9,20 +9,20 @@
 .dashboard {
   display: flex;
   min-height: 100vh;
-  background: #f1f5f9;
+  background: linear-gradient(180deg, #eef4ff 0%, #f8fafc 100%);
 }
 
 /* Sidebar */
 .sidebar {
   width: 250px;
-  background: #0f172a;
+  background: linear-gradient(180deg, #0f172a 0%, #11203b 100%);
   color: white;
   padding: 25px 20px;
   position: sticky;
   top: 0;
   height: 100vh;
   overflow-y: auto;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 6px 0 24px rgba(15, 23, 42, 0.16);
 }
 
 .logo {
@@ -88,10 +88,11 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 30px;
-  padding: 20px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  padding: 22px 24px;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
 }
 
 .header h1 {
@@ -128,22 +129,18 @@
 }
 
 .card {
-  background: white;
-  padding: 25px;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 24px;
   text-align: center;
-  border-radius: 16px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 18px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+  transition: all 0.25s ease;
 }
 
 .card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-}
-
-.card-icon {
-  font-size: 32px;
-  margin-bottom: 10px;
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(15, 23, 42, 0.12);
 }
 
 .card h2 {

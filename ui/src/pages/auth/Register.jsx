@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { authApi } from '../../api';
+import { useToast } from '../../context/ToastContext';
 import "./Register.css";
 
 function Register() {
   const navigate = useNavigate();
+  const { showToast } = useToast();
   const [formData, setFormData] = useState({
+    username: "",
     fullname: "",
     email: "",
     phone: "",
     department: "",
     password: "",
     confirmPassword: "",
-    role: "",
   });
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,48 +27,63 @@ function Register() {
     }));
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
+
     if (formData.password !== formData.confirmPassword) {
-      alert("❌ Passwords do not match!");
+      setError("Passwords do not match.");
       return;
     }
-    console.log("Registration form submitted:", formData);
-    localStorage.setItem("access_token", "mock-token");
-    localStorage.setItem("user_role", formData.role || 'user');
-    alert("✅ Registration Successful! (Mock execution)");
-    navigate("/dashboard");
+
+    setIsSubmitting(true);
+
+    try {
+      await authApi.register({
+        username: formData.username,
+        fullname: formData.fullname,
+        email: formData.email,
+        phone: formData.phone,
+        department: formData.department,
+        password: formData.password,
+      });
+
+      showToast("Account created successfully. Please log in.");
+      navigate("/login", { replace: true });
+    } catch (err) {
+      setError(err.message || "Unable to create account right now.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
     <div className="register-page">
-      {/* Left Section */}
       <div className="left-side">
         <div className="overlay">
-          <h2>🎒 College Lost & Found</h2>
-          <h1>
-            Reuniting <br />
-            People with <br />
-            Their Belongings
-          </h1>
+          <h2>Lost & Found</h2>
+          <h1>Create your account</h1>
           <p>
-            A secure and easy platform to report lost items,
-            submit found items and reconnect belongings with
-            their owners.
+            Join the campus reporting workflow to post items, claim belongings,
+            and manage lost and found updates.
           </p>
-          <div className="feature">✔ Secure & Safe</div>
-          <div className="feature">✔ Report & Claim Easily</div>
-          <div className="feature">✔ Instant Notifications</div>
         </div>
       </div>
 
-      {/* Right Section */}
       <div className="right-side">
         <form className="register-card" onSubmit={handleRegister}>
           <h2>Create an Account</h2>
-          <p>Join the College Lost & Found Community</p>
+          <p>Register with your campus details.</p>
 
           <div className="row">
+            <input
+              type="text"
+              name="username"
+              placeholder="Username"
+              value={formData.username}
+              onChange={handleChange}
+              required
+            />
             <input
               type="text"
               name="fullname"
@@ -72,6 +92,9 @@ function Register() {
               onChange={handleChange}
               required
             />
+          </div>
+
+          <div className="row">
             <input
               type="email"
               name="email"
@@ -80,9 +103,6 @@ function Register() {
               onChange={handleChange}
               required
             />
-          </div>
-
-          <div className="row">
             <input
               type="text"
               name="phone"
@@ -91,6 +111,9 @@ function Register() {
               onChange={handleChange}
               required
             />
+          </div>
+
+          <div className="row">
             <input
               type="text"
               name="department"
@@ -120,24 +143,14 @@ function Register() {
             />
           </div>
 
-          <select
-            name="role"
-            value={formData.role}
-            onChange={handleChange}
-            required
-            defaultValue=""
-          >
-            <option value="" disabled>Select Role</option>
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-          </select>
+          {error && <p className="auth-error">{error}</p>}
 
-          <button type="submit" className="register-btn">
-            Create Account
+          <button type="submit" className="register-btn" disabled={isSubmitting}>
+            {isSubmitting ? "Creating Account..." : "Create Account"}
           </button>
 
           <div className="login-link">
-            Already have an account? <Link to="/">Login</Link>
+            Already have an account? <Link to="/login">Login</Link>
           </div>
         </form>
       </div>
