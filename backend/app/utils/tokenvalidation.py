@@ -1,10 +1,10 @@
 import os
-from jose import jwt
-
-from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
 from typing import Optional
+
+from dotenv import load_dotenv
 from fastapi import HTTPException
+from jose import jwt
 from jose.exceptions import JWTClaimsError
 
 from app.models.usersmodel import TokenData
@@ -47,12 +47,12 @@ def verify_token(token: str) -> TokenData:
 
     try:
         payload = jwt.decode(token, SECRET, algorithms=[ALGORITHM])
-        email= payload.get("email")
+        username = payload.get("username")
 
-        if email is None:
+        if username is None:
             raise credentials_exception
 
-        return TokenData(email=email)
+        return TokenData(username=username)
 
     except JWTClaimsError:
         raise credentials_exception

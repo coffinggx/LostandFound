@@ -3,7 +3,7 @@ name = "backend"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.14"
+requires-python = ">=3.13, <3.14"
 dependencies = [
     "asyncmy>=0.2.11", # async driver betn sql and application
     "pwdlib[argon2]>=0.3.0", # pass hashing
@@ -15,4 +15,5 @@ dependencies = [
     "python-jose[cryptography]>=3.5.0", # hashing algos
     "cloudinary>=1.44.2", # handle images
     "python-multipart>=0.0.29", #handle files upload
+    "requests>=2.34.2",
 ]
