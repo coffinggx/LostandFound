@@ -20,12 +20,10 @@ load_dotenv()
 
 DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 
 # asyncmy is mysql driver
-DATABASE_URL = (
-    f"mysql+asyncmy://{DATABASE_USERNAME}:{DATABASE_PASSWORD}@localhost:3306/project"
-)
 
 # engine to connect Fastapi and mysql as Fastapi <-> Engine <-> MySQL
 engine = create_async_engine(DATABASE_URL, echo=True)
