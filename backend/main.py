@@ -16,6 +16,7 @@ from app.models.itemmodels import Item
 from app.models.claimmodels import Claim
 from app.models.categorymodels import Category
 
+from fastapi.middleware.cors import CORSMiddleware
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -30,6 +31,20 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+origins = [
+    "http://localhost:5173",
+    "https://lost-and-found-git-main-coffinggxs-projects.vercel.app",
+    "https://lostandfound.vercel.app",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(userRouter, prefix="/api/v1/user")
 app.include_router(itemRouter, prefix="/api/v1/item")
