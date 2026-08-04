@@ -1,42 +1,58 @@
 from dotenv import load_dotenv
 import os
-
-from sqlalchemy.orm import DeclarativeBase
-
-# global DeclarativeBase class
-class Base(DeclarativeBase):
-    pass
+import ssl
 
 from typing import Annotated
-from fastapi import Depends
 
+from fastapi import Depends
+from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.ext.asyncio import (
-    create_async_engine,
-    async_sessionmaker,
     AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
 )
 
 load_dotenv()
 
-DATABASE_USERNAME = os.getenv("DATABASE_USERNAME")
-DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+
+# Base model
+class Base(DeclarativeBase):
+    pass
+
+
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-
-# asyncmy is mysql driver
-
-# engine to connect Fastapi and mysql as Fastapi <-> Engine <-> MySQL
-engine = create_async_engine(DATABASE_URL, echo=True)
-
-# creating a session : temp conversation with database
-AsyncSessionLocal = async_sessionmaker(bind=engine, expire_on_commit=False)
+if not DATABASE_URL:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
 
 
+# Create SSL context (required for TiDB Cloud)
+ssl_context = ssl.create_default_context()
+
+
+# Create async engine
+engine = create_async_engine(
+    DATABASE_URL,
+    echo=True,
+    connect_args={
+        "ssl": ssl_context,
+    },
+)
+
+
+# Session factory
+AsyncSessionLocal = async_sessionmaker(
+    bind=engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+)
+
+
+# Dependency
 async def get_db():
     async with AsyncSessionLocal() as session:
-        yield session  # yeild converts regular func into generator fn
+        yield session
 
 
-
-# for simpler use od type
+# Type alias for dependency injection
 sessiondb = Annotated[AsyncSession, Depends(get_db)]
