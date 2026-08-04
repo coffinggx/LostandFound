@@ -29,10 +29,8 @@ function App() {
         {/* Protected routes with RootLayout */}
         <Route element={<ProtectedRoute />}>
           <Route path="/" element={<RootLayout />}>
-            <Route index element={<Home />} />
-            <Route path="home" element={<Home />} />
+            <Route index element={<Browseitem/>} />
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="browse" element={<Browseitem />} />
             <Route path="item/:id" element={<ItemDetails />} />
             <Route path="claim/:id" element={<ClaimItem />} />
             <Route path="claims" element={<Myclaims />} />

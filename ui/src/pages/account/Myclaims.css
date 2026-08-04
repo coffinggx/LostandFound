@@ -4,6 +4,43 @@
   max-width: 1200px;
   margin: 0 auto;
 }
+.claim-actions-inline{
+  display: flex;
+}
+.view-btn{
+  padding: 6px 16px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+.edit-btn{
+  padding: 6px 16px;
+  background: #facc15;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.delete-btn{
+  padding: 6px 16px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
 
 .claims-header {
   margin-bottom: 30px;
@@ -114,22 +151,7 @@
   color: #dc2626;
 }
 
-.view-btn {
-  padding: 6px 16px;
-  background: #3b82f6;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
 
-.view-btn:hover {
-  background: #2563eb;
-  transform: scale(1.05);
-}
 
 /* Responsive */
 @media (max-width: 768px) {

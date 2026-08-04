@@ -44,7 +44,7 @@ const Dashboard = () => {
           <h2 className="logo">Lost & Found</h2>
           <ul>
             <li className="active" onClick={() => navigate('/dashboard')}>Dashboard</li>
-            <li onClick={() => navigate('/home')}>Home Feed</li>
+            <li onClick={() => navigate('/')}>Home Feed</li>
             <li onClick={() => navigate('/browse')}>Browse Items</li>
             <li onClick={() => navigate('/admin')}>Admin Panel</li>
             <li onClick={() => navigate('/profile')}>Profile</li>

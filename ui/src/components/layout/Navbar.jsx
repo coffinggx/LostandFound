@@ -17,14 +17,13 @@ const Navbar = () => {
     <nav className="navbar">
       <div className="nav-container">
         <div className="nav-brand">
-          <Link to="/home">
+          <Link to="/">
             <span className="brand-text">Lost & Found</span>
           </Link>
         </div>
 
         <div className="nav-menu">
-          <Link to="/home" className="nav-link">Home</Link>
-          <Link to="/browse" className="nav-link">Browse</Link>
+          <Link to="/" className="nav-link">Browse</Link>
           {role === 'admin' ? (
             <>
               <Link to="/admin" className="nav-link">Admin</Link>
@@ -34,8 +33,6 @@ const Navbar = () => {
             <>
               <Link to="/claims" className="nav-link">My Claims</Link>
               <Link to="/posts" className="nav-link">My Posts</Link>
-              <Link to="/report-lost" className="nav-link">Report Lost</Link>
-              <Link to="/report-found" className="nav-link">Report Found</Link>
               <Link to="/profile" className="nav-link">Profile</Link>
             </>
           )}

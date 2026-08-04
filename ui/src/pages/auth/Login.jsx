@@ -14,7 +14,7 @@ function Login() {
 
   useEffect(() => {
     if (localStorage.getItem("access_token")) {
-      navigate("/home", { replace: true });
+      navigate("/", { replace: true });
     }
   }, [navigate]);
 
@@ -35,7 +35,7 @@ function Login() {
       const profileData = await authApi.getCurrentUser(tokenData.access_token).catch(() => ({ role: "user" }));
       localStorage.setItem("user_role", profileData.role || "user");
 
-      navigate("/home", { replace: true });
+      navigate("/", { replace: true });
     } catch (err) {
       setError(err.message || "Something went wrong during login.");
     } finally {
@@ -47,7 +47,7 @@ function Login() {
     <div className="login-page">
       <div className="login-container">
         <div className="login-card">
-          <div className="logo">🎒</div>
+          <div className="logo"></div>
           <h1>Lost & Found</h1>
           <p className="subtitle">Sign in with your username and password.</p>
 
