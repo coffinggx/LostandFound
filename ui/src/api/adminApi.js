@@ -1,4 +1,4 @@
-const BASE_URL = '/api';
+const BASE_URL = 'https://lostandfound-2zsq.onrender.com/api';
 
 function buildUrl(path) {
   return `${BASE_URL}${path}`;
