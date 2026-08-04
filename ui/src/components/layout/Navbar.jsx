@@ -1,16 +1,29 @@
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Navbar.css';
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const role = localStorage.getItem('user_role');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setSearchTerm(params.get('search') || '');
+  }, [location.search]);
 
   const handleLogout = () => {
     localStorage.removeItem('access_token');
     localStorage.removeItem('user_role');
     localStorage.removeItem('user_profile');
     navigate('/login');
+  };
+
+  const handleSearch = (event) => {
+    event.preventDefault();
+    const trimmedTerm = searchTerm.trim();
+    navigate(trimmedTerm ? `/?search=${encodeURIComponent(trimmedTerm)}` : '/');
   };
 
   return (
@@ -39,6 +52,16 @@ const Navbar = () => {
         </div>
 
         <div className="nav-actions">
+          <form className="nav-search" onSubmit={handleSearch}>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search items"
+              aria-label="Search items"
+            />
+            <button type="submit">Search</button>
+          </form>
           <button onClick={handleLogout} className="logout-btn">
             Logout
           </button>
