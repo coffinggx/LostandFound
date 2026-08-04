@@ -35,6 +35,7 @@ app = FastAPI(lifespan=lifespan)
 origins = [
     "http://localhost:5173",
     "https://lost-and-found-git-main-coffinggxs-projects.vercel.app",
+    "https://lostand-found-git-main-coffinggxs-projects.vercel.app",
     "https://lostandfound.vercel.app",
     "https://lostand-found-beta.vercel.app"
 ]
